@@ -12,8 +12,6 @@ import re
 import requests
 import ssl
 import threading
-import urllib.request
-import urllib.parse
 
 from geopy.distance import vincenty
 from geopy.distance import VincentyDistance
@@ -260,6 +258,13 @@ def add_optional_parameters(detail_json, detail, rating, rating_n, popularity, c
 	return detail_json
 
 
+def query_format(query):
+	query = query.split(' ')
+	query = '+'.join(query)
+	query = '+' + query
+
+	return query
+
 def get_data_from_search(place_identifier, proxy_host=False):
 	"""
 	request information for a place and parse current popularity
@@ -270,7 +275,7 @@ def get_data_from_search(place_identifier, proxy_host=False):
 		"tbm": "map",
 		"tch": 1,
 		"hl": "en",
-		"q": urllib.parse.quote_plus(place_identifier),
+		"q": query_format(place_identifier),
 		"pb": "!4m12!1m3!1d4005.9771522653964!2d-122.42072974863942!3d37.8077459796541!2m3!1f0!2f0!3f0!3m2!1i1125!2i976"
 			  "!4f13.1!7i20!10b1!12m6!2m3!5m1!6e2!20e3!10b1!16b1!19m3!2m2!1i392!2i106!20m61!2m2!1i203!2i100!3m2!2i4!5b1"
 			  "!6m6!1m2!1i86!2i86!1m2!1i408!2i200!7m46!1m3!1e1!2b0!3e3!1m3!1e2!2b1!3e2!1m3!1e2!2b0!3e3!1m3!1e3!2b0!3e3!"
@@ -404,7 +409,7 @@ def get_populartimes_from_search(place_identifier, proxy_host=False):
 		"tbm": "map",
 		"tch": 1,
 		"hl": "en",
-		"q": urllib.parse.quote_plus(place_identifier),
+		"q": query_format(place_identifier),
 		"pb": "!4m12!1m3!1d4005.9771522653964!2d-122.42072974863942!3d37.8077459796541!2m3!1f0!2f0!3f0!3m2!1i1125!2i976"
 			  "!4f13.1!7i20!10b1!12m6!2m3!5m1!6e2!20e3!10b1!16b1!19m3!2m2!1i392!2i106!20m61!2m2!1i203!2i100!3m2!2i4!5b1"
 			  "!6m6!1m2!1i86!2i86!1m2!1i408!2i200!7m46!1m3!1e1!2b0!3e3!1m3!1e2!2b1!3e2!1m3!1e2!2b0!3e3!1m3!1e3!2b0!3e3!"
