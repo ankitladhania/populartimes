@@ -293,6 +293,7 @@ def get_data_from_search(place_identifier, proxy_host=False):
 	resp = req.get(url=search_url, headers=user_agent)
 	data = resp.text.split('/*""*/')[0]
 
+
 	# find eof json
 	jend = data.rfind("}")
 	if jend >= 0:
@@ -300,6 +301,7 @@ def get_data_from_search(place_identifier, proxy_host=False):
 
 	jdata = json.loads(data)["d"]
 	jdata = json.loads(jdata[4:])
+
 	# get info from result array, has to be adapted if backend api changes
 	to_return = {}
 
@@ -313,12 +315,41 @@ def get_data_from_search(place_identifier, proxy_host=False):
 	to_return['category'] = index_get(info, 13)
 	to_return['website'] = index_get(info, 7, 0)
 
-	to_return['open_timings'] = index_get(info, 34, 1)
+	to_return['open_timings'] = []
+	open_timings = index_get(info, 34, 1)
+
+	if open_timings is not None:
+		for timing in open_timings:
+			t = {}
+			t['day'] = index_get(timing, 0)
+			t['timing'] = index_get(timing, 1)
+			to_return['open_timings'].append(t)
+
+	to_return['extra_description'] = []
+	extra_description = index_get(info, 32)
+	if extra_description is not None:
+		for des in extra_description:
+			d = index_get(des, 1)
+			to_return['extra_description'].append(d)
+
 	to_return['address'] = index_get(info, 39)
 	to_return['map_url'] = index_get(info, 42)
 
 	to_return['wikipedia_description'] = index_get(info, 44, 2, 0)
-	to_return['phone_numbers'] = index(info, 90)
+	to_return['phone_numbers'] = index_get(info, 90)
+	to_return['formatted_phone_number'] = index_get(info, 3)
+
+	to_return['pricing'] = index_get(info, 35, 5)
+	to_return['hotel_stars'] = index_get(info, 35, 6)
+
+	amenities = index_get(info, 64, 1)
+	to_return['amenities'] = []
+	if amenities is not None:
+		for amenity in amenities:
+			a = {}
+			a['title'] = index_get(amenity, 5, 3)
+			to_return['amenities'].append(a)
+
 
 	reviews = index_get(info, 52, 0)
 	to_return_reviews = []

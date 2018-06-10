@@ -88,7 +88,7 @@ def get_data_from_search(place_identifier, proxy_host=False):
     """
     to_return = internal_get_data_from_search(place_identifier, proxy_host)
 
-    if to_return['popular_times'] is not None:
+    if 'popular_times' in to_return and to_return['popular_times'] is not None:
         popularity, wait_times = get_popularity_for_day(to_return['popular_times'])
 
         to_return['popularity'] = popularity
