@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .crawler import run
+#from .crawler import run
 from .crawler import get_populartimes
 from .crawler import get_populartimes_from_search as internal_get_populartimes_from_search
 from .crawler import get_data_from_search as internal_get_data_from_search
@@ -46,7 +46,7 @@ def get(api_key, types, p1, p2, n_threads=20, radius=180, all_places=False):
         }
     }
 
-    return run(params)
+    return params
 
 
 def get_id(api_key, place_id):
