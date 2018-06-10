@@ -15,7 +15,7 @@ import threading
 
 from geopy.distance import vincenty
 from geopy.distance import VincentyDistance
-from queue import queue
+# from queue import queue
 
 # urls for google api web service
 radar_url = "https://maps.googleapis.com/maps/api/place/radarsearch/json?location={},{}&radius={}&types={}&key={}"
