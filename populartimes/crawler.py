@@ -15,7 +15,7 @@ import threading
 
 from geopy.distance import vincenty
 from geopy.distance import VincentyDistance
-from queue import Queue
+from queue import queue
 
 # urls for google api web service
 radar_url = "https://maps.googleapis.com/maps/api/place/radarsearch/json?location={},{}&radius={}&types={}&key={}"
@@ -540,50 +540,50 @@ def check_response_code(resp):
 								"Unidentified error with the Places API, please check the response code")
 
 
-def run(_params):
-	"""
-	wrap execution logic in method, for later external call
-	:return:
-	"""
-	start = datetime.datetime.now()
+# def run(_params):
+# 	"""
+# 	wrap execution logic in method, for later external call
+# 	:return:
+# 	"""
+# 	start = datetime.datetime.now()
 
-	global params, g_place_ids, q_radar, q_detail, results
+# 	global params, g_place_ids, q_radar, q_detail, results
 
-	# shared variables
-	params = _params
-	q_radar, q_detail = Queue(), Queue()
-	g_place_ids, results = set(), list()
+# 	# shared variables
+# 	params = _params
+# 	q_radar, q_detail = Queue(), Queue()
+# 	g_place_ids, results = set(), list()
 
-	logging.info("Adding places to queue...")
+# 	logging.info("Adding places to queue...")
 
-	# threading for radar search
-	for i in range(params["n_threads"]):
-		t = threading.Thread(target=worker_radar)
-		t.daemon = True
-		t.start()
+# 	# threading for radar search
+# 	for i in range(params["n_threads"]):
+# 		t = threading.Thread(target=worker_radar)
+# 		t.daemon = True
+# 		t.start()
 
-	# cover search area with circles
-	bounds = params["bounds"]
-	for lat, lng in get_circle_centers([bounds["lower"]["lat"], bounds["lower"]["lng"]],  # southwest
-									   [bounds["upper"]["lat"], bounds["upper"]["lng"]],  # northeast
-									   params["radius"]):
-		q_radar.put((lat, lng))
+# 	# cover search area with circles
+# 	bounds = params["bounds"]
+# 	for lat, lng in get_circle_centers([bounds["lower"]["lat"], bounds["lower"]["lng"]],  # southwest
+# 									   [bounds["upper"]["lat"], bounds["upper"]["lng"]],  # northeast
+# 									   params["radius"]):
+# 		q_radar.put((lat, lng))
 
-	q_radar.join()
-	logging.info("Finished in: {}".format(str(datetime.datetime.now() - start)))
+# 	q_radar.join()
+# 	logging.info("Finished in: {}".format(str(datetime.datetime.now() - start)))
 
-	logging.info("{} places to process...".format(len(g_place_ids)))
+# 	logging.info("{} places to process...".format(len(g_place_ids)))
 
-	# threading for detail search and popular times
-	for i in range(params["n_threads"]):
-		t = threading.Thread(target=worker_detail)
-		t.daemon = True
-		t.start()
+# 	# threading for detail search and popular times
+# 	for i in range(params["n_threads"]):
+# 		t = threading.Thread(target=worker_detail)
+# 		t.daemon = True
+# 		t.start()
 
-	for g_place_id in g_place_ids:
-		q_detail.put(g_place_id)
+# 	for g_place_id in g_place_ids:
+# 		q_detail.put(g_place_id)
 
-	q_detail.join()
-	logging.info("Finished in: {}".format(str(datetime.datetime.now() - start)))
+# 	q_detail.join()
+# 	logging.info("Finished in: {}".format(str(datetime.datetime.now() - start)))
 
-	return results
+# 	return results
